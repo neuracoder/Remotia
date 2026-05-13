@@ -4,43 +4,43 @@
   <img src="assets/logo.png" alt="Remotia" width="400"/>
 </p>
 
-Intercepta los momentos en que Claude Code (u otras IAs agénticas) se detiene esperando
-aprobación del usuario y envía una notificación a Telegram con botones interactivos para
-aprobar o rechazar desde el celular — sin necesidad de estar frente a la PC.
+Intercepts the moments when Claude Code (or other agentic AI tools) pauses waiting for
+your approval, and sends a Telegram notification with interactive buttons so you can
+approve or reject from your phone — without needing to be at your computer.
 
-**Caso de uso real:** Te alejás de la PC para llevar a tus hijos al colegio. Claude Code
-se detiene esperando un "yes". Con Remotia podés aprobar desde el auto con un tap en
-Telegram y el proceso continúa solo.
-
----
-
-## Prerequisitos
-
-- Python 3.10 o superior
-- Cuenta de Telegram
-- Un bot de Telegram creado con [@BotFather](https://t.me/BotFather)
-- [Claude Code](https://claude.ai/code) instalado
+**Real-world use case:** You step away from your computer to drop the kids off at school.
+Claude Code stops and waits for a "yes". With Remotia you can approve from the car with
+a tap in Telegram and the process keeps running on its own.
 
 ---
 
-## Obtener credenciales de Telegram
+## Prerequisites
 
-### Token del bot
+- Python 3.10 or higher
+- A Telegram account
+- A Telegram bot created with [@BotFather](https://t.me/BotFather)
+- [Claude Code](https://claude.ai/code) installed
 
-1. Abrí Telegram y buscá `@BotFather`
-2. Enviá `/newbot` y seguí las instrucciones
-3. Copiá el token que te da (formato: `123456789:AAF...`)
+---
+
+## Get your Telegram credentials
+
+### Bot token
+
+1. Open Telegram and search for `@BotFather`
+2. Send `/newbot` and follow the instructions
+3. Copy the token it gives you (format: `123456789:AAF...`)
 
 ### Chat ID
 
-1. Buscá `@userinfobot` en Telegram y enviá cualquier mensaje
-2. Te responde con tu `id` — ese es tu `TELEGRAM_CHAT_ID`
+1. Search for `@userinfobot` in Telegram and send any message
+2. It replies with your `id` — that's your `TELEGRAM_CHAT_ID`
 
-Alternativa: buscá `@getidsbot` y usá `/start`.
+Alternative: search for `@getidsbot` and send `/start`.
 
 ---
 
-## Instalación
+## Installation
 
 ### Linux
 
@@ -51,7 +51,7 @@ chmod +x install.sh uninstall.sh remotia-cli
 ./install.sh
 ```
 
-Si `~/.local/bin` no está en tu `PATH`, el instalador te avisa. Para agregarlo permanentemente:
+If `~/.local/bin` is not in your `PATH`, the installer will warn you. To add it permanently:
 
 ```bash
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
@@ -67,17 +67,17 @@ chmod +x install.sh uninstall.sh remotia-cli
 ./install.sh
 ```
 
-El instalador detecta macOS automáticamente y omite el flag `--break-system-packages`.
-Si usás Homebrew, asegurate de que `pip3` apunte a tu Python de Homebrew.
+The installer automatically detects macOS and skips the `--break-system-packages` flag.
+If you use Homebrew, make sure `pip3` points to your Homebrew Python.
 
 ### Windows
 
-**Prerequisitos:**
-- [Python 3.10+](https://www.python.org/downloads/) — durante la instalación marcá la opción **"Add Python to PATH"**
-- [Claude Code](https://claude.ai/code) instalado y configurado
-- Git (o descargá el ZIP del repositorio)
+**Prerequisites:**
+- [Python 3.10+](https://www.python.org/downloads/) — during installation, check **"Add Python to PATH"**
+- [Claude Code](https://claude.ai/code) installed and configured
+- Git (or download the ZIP from the repository)
 
-Abrí **cmd** o **PowerShell** en la carpeta del proyecto y ejecutá:
+Open **cmd** or **PowerShell** in the project folder and run:
 
 ```bat
 git clone https://github.com/neuracoder/Remotia.git
@@ -85,57 +85,59 @@ cd Remotia
 install.bat
 ```
 
-El instalador instala las dependencias Python, registra el hook en `settings.json` de Claude Code y agrega `%USERPROFILE%\bin` al PATH del usuario automáticamente.
+The installer installs Python dependencies, registers the hook in Claude Code's `settings.json`,
+and automatically adds `%USERPROFILE%\bin` to your user PATH.
 
-> **Importante:** al terminar la instalación, cerrá esta terminal y abrí una nueva. El comando `remotia` no estará disponible en la misma sesión donde se ejecutó `install.bat`.
+> **Important:** when the installation finishes, close this terminal and open a new one.
+> The `remotia` command won't be available in the same session where you ran `install.bat`.
 
-Verificá que la instalación funcionó abriendo una terminal nueva y ejecutando:
+Verify the installation worked by opening a new terminal and running:
 
 ```bat
 remotia status
 ```
 
-Debería responder `[INACTIVO] Remotia esta INACTIVO`.
+It should respond with `[INACTIVO] Remotia esta INACTIVO`.
 
 ---
 
-## Configuración
+## Configuration
 
-Editá el archivo `.env` que el instalador creó:
+Edit the `.env` file the installer created:
 
 ```env
 TELEGRAM_BOT_TOKEN=123456789:AAFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TELEGRAM_CHAT_ID=987654321
 
-# Opcionales
-REMOTIA_TIMEOUT_SECONDS=480   # segundos antes de cancelar automáticamente (default: 8 min)
-# REMOTIA_LOG_FILE=/ruta/personalizada/remotia.log
+# Optional
+REMOTIA_TIMEOUT_SECONDS=480   # seconds before auto-cancelling (default: 8 min)
+# REMOTIA_LOG_FILE=/custom/path/remotia.log
 ```
 
 ---
 
-## Probar antes de usar en producción
+## Run the integration test
 
 ```bash
 python3 tests/test_send_notification.py
 ```
 
-Enviará un mensaje de prueba a tu Telegram con los botones Aprobar/Cancelar.
-Si llegó y los botones funcionan, Remotia está listo.
+Sends a test message to your Telegram with Approve/Cancel buttons.
+If it arrives and the buttons work, Remotia is ready to go.
 
 ---
 
-## Activación manual
+## Activation
 
-Remotia arranca **inactivo** tras la instalación. Activalo solo cuando te alejás de la
-PC; cuando estés frente a ella, desactivalo para evitar interrupciones innecesarias.
+Remotia starts **inactive** after installation. Turn it on only when you're stepping away
+from your computer; turn it off when you're back to avoid unnecessary interruptions.
 
 ### Linux / macOS
 
 ```bash
-remotia on      # activa la interceptación → las acciones llegan a Telegram
-remotia off     # desactiva → Claude Code opera sin interceptación
-remotia status  # muestra el estado actual
+remotia on      # activate — actions will be sent to Telegram
+remotia off     # deactivate — Claude Code runs without interception
+remotia status  # show current state
 ```
 
 ### Windows
@@ -146,7 +148,7 @@ remotia off
 remotia status
 ```
 
-Ejemplos de salida:
+Sample output:
 
 ```
 $ remotia on
@@ -159,32 +161,32 @@ $ remotia off
 ⏸  Remotia desactivado — Claude Code operará sin interceptación.
 ```
 
-El estado se guarda como archivo vacío:
+The state is stored as an empty flag file:
 - **Linux/macOS:** `~/.remotia/active`
 - **Windows:** `%USERPROFILE%\.remotia\active`
 
-Si el archivo existe → activo. Si no existe → inactivo.
-Remotia verifica esto al inicio de cada hook y sale en menos de 1 ms si está inactivo.
+If the file exists → active. If not → inactive.
+Remotia checks this at the start of every hook and exits in under 1 ms when inactive.
 
 ---
 
-## Uso normal
+## How it works
 
-Una vez activado con `remotia on`, cuando Claude Code quiere ejecutar un comando Bash,
-escribir un archivo u otras acciones que requieren permiso:
+Once activated with `remotia on`, whenever Claude Code wants to run a Bash command,
+write a file, or take other actions that require permission:
 
-1. Llega una notificación a tu Telegram con los detalles de la acción
-2. Tocás ✅ **Aprobar** o ❌ **Cancelar**
-3. Claude Code recibe la decisión y continúa
+1. A notification arrives in your Telegram with the action details
+2. You tap ✅ **Approve** or ❌ **Cancel**
+3. Claude Code receives the decision and continues
 
-Si no respondés en el tiempo configurado (default: 8 minutos), la acción se cancela
-automáticamente y Telegram te notifica.
+If you don't respond within the configured timeout (default: 8 minutes), the action is
+automatically cancelled and Telegram notifies you.
 
 ---
 
-## Historial de decisiones
+## Decision log
 
-Cada decisión queda registrada en `~/.remotia/remotia.log` (Linux/macOS) o
+Every decision is logged to `~/.remotia/remotia.log` (Linux/macOS) or
 `%USERPROFILE%\.remotia\remotia.log` (Windows):
 
 ```
@@ -193,7 +195,7 @@ Cada decisión queda registrada en `~/.remotia/remotia.log` (Linux/macOS) o
 2026-05-13 10:31:02  INFO  TIMEOUT   | tool=Bash | acción=rm -rf dist/ | elapsed=480.0s
 ```
 
-Para ver solo el historial de decisiones (sin ruido de polling):
+To filter only decision entries (skip polling noise):
 
 ```bash
 grep -E "(PENDIENTE|DECISIÓN|TIMEOUT)" ~/.remotia/remotia.log
@@ -201,7 +203,7 @@ grep -E "(PENDIENTE|DECISIÓN|TIMEOUT)" ~/.remotia/remotia.log
 
 ---
 
-## Desinstalar
+## Uninstall
 
 ### Linux / macOS
 
@@ -211,72 +213,75 @@ grep -E "(PENDIENTE|DECISIÓN|TIMEOUT)" ~/.remotia/remotia.log
 
 ### Windows
 
-Eliminá manualmente la entrada de Remotia de `%USERPROFILE%\.claude\settings.json`.
+```bat
+uninstall.bat
+```
 
-El desinstalador elimina solo la entrada de Remotia de `settings.json`. Los archivos
-del proyecto y los logs en `~/.remotia/` no se tocan.
+The uninstaller only removes the Remotia hook from `settings.json`. Project files and
+logs in `~/.remotia/` are left untouched.
 
 ---
 
-## Estructura del proyecto
+## Project structure
 
 ```
 Remotia/
-├── remotia.py              # Hook handler principal
-├── telegram_notifier.py    # Integración Telegram (requests puro)
-├── decision_store.py       # Store thread-safe para la decisión
-├── config.py               # Carga variables desde .env
-├── remotia-cli             # CLI bash: remotia on/off/status (Linux/macOS)
-├── remotia.bat             # CLI batch equivalente (Windows)
+├── remotia.py              # Main hook handler
+├── telegram_notifier.py    # Telegram integration (pure requests)
+├── decision_store.py       # Thread-safe decision store
+├── config.py               # Loads variables from .env
+├── remotia-cli             # Bash CLI: remotia on/off/status (Linux/macOS)
+├── remotia.bat             # Equivalent batch CLI (Windows)
 ├── requirements.txt        # requests, python-dotenv
-├── .env.example            # Plantilla de configuración
-├── install.sh              # Instalador Linux/macOS
-├── install.bat             # Instalador Windows
-├── uninstall.sh            # Desinstalador Linux/macOS
-├── CHANGELOG.md            # Historial de versiones
+├── .env.example            # Configuration template
+├── install.sh              # Linux/macOS installer
+├── install.bat             # Windows installer
+├── uninstall.sh            # Linux/macOS uninstaller
+├── uninstall.bat           # Windows uninstaller
+├── CHANGELOG.md            # Version history
 └── tests/
-    ├── test_hook_input.json        # JSON de ejemplo que envía Claude Code
-    └── test_send_notification.py  # Test de integración manual con Telegram
+    ├── test_hook_input.json        # Sample JSON sent by Claude Code
+    └── test_send_notification.py  # Manual Telegram integration test
 ```
 
 ---
 
-## Extender a otras IAs
+## Extending to other AIs
 
-Remotia puede adaptarse a cualquier sistema que permita hooks externos que lean stdin
-y escriban stdout.
+Remotia can be adapted to any system that supports external hooks reading from stdin
+and writing to stdout.
 
-`remotia.py` implementa el protocolo de Claude Code, pero el núcleo del sistema
-(`telegram_notifier` + `decision_store`) es agnóstico. Para otro sistema:
+`remotia.py` implements the Claude Code protocol, but the core of the system
+(`telegram_notifier` + `decision_store`) is agnostic. For another system:
 
-1. **Crear un wrapper** que traduzca el formato de entrada al que espera `_format_message()`:
+1. **Create a wrapper** that translates the input format into what `_format_message()` expects:
 
 ```python
 payload = {
     "hook_event_name": "PreToolUse",
-    "tool_name": "NombreTool",
+    "tool_name": "ToolName",
     "tool_input": { ... }
 }
 ```
 
-2. **Reutilizar** `telegram_notifier.send_and_wait()` directamente desde el wrapper.
+2. **Reuse** `telegram_notifier.send_and_wait()` directly from the wrapper.
 
-3. **Traducir** la respuesta (`"allow"` / `"deny"`) al formato que espera la IA target.
+3. **Translate** the response (`"allow"` / `"deny"`) to the format expected by the target AI.
 
-### Ejemplo: Cursor AI / Windsurf
+### Example: Cursor AI / Windsurf
 
 ```python
 #!/usr/bin/env python3
 import sys
-sys.path.insert(0, "/ruta/a/Remotia")
+sys.path.insert(0, "/path/to/Remotia")
 import telegram_notifier, config
 
 config.validate()
-message = "..."  # construir desde el input del editor
+message = "..."  # build from the editor's input
 decision = telegram_notifier.send_and_wait(message, timeout=480)
-# convertir decision al formato del editor
+# translate decision to the editor's expected format
 ```
 
 ---
 
-*Desarrollado como parte del ecosistema [Neuracoder](https://github.com/neuracoder) — herramientas para flujo de trabajo agéntico remoto.*
+*Built as part of the [Neuracoder](https://github.com/neuracoder) ecosystem — tools for remote agentic workflows.*
