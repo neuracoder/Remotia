@@ -13,6 +13,14 @@ import sys
 import time
 from pathlib import Path
 
+# Windows: force UTF-8 output so emojis don't crash cp1252 console
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
+
 # Asegurar que el root del proyecto esté en el path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 

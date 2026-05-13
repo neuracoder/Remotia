@@ -68,19 +68,30 @@ Si usás Homebrew, asegurate de que `pip3` apunte a tu Python de Homebrew.
 
 ### Windows
 
+**Prerequisitos:**
+- [Python 3.10+](https://www.python.org/downloads/) — durante la instalación marcá la opción **"Add Python to PATH"**
+- [Claude Code](https://claude.ai/code) instalado y configurado
+- Git (o descargá el ZIP del repositorio)
+
+Abrí **cmd** o **PowerShell** en la carpeta del proyecto y ejecutá:
+
 ```bat
 git clone https://github.com/neuracoder/Remotia.git
 cd Remotia
 install.bat
 ```
 
-Para agregar `remotia` al PATH permanentemente, ejecutá en PowerShell (como administrador):
+El instalador instala las dependencias Python, registra el hook en `settings.json` de Claude Code y agrega `%USERPROFILE%\bin` al PATH del usuario automáticamente.
 
-```powershell
-[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$env:USERPROFILE\bin", "User")
+> **Importante:** al terminar la instalación, cerrá esta terminal y abrí una nueva. El comando `remotia` no estará disponible en la misma sesión donde se ejecutó `install.bat`.
+
+Verificá que la instalación funcionó abriendo una terminal nueva y ejecutando:
+
+```bat
+remotia status
 ```
 
-Luego reiniciá la terminal.
+Debería responder `[INACTIVO] Remotia esta INACTIVO`.
 
 ---
 
