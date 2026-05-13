@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Remotia control: on | off | status
+set -euo pipefail
+
+ACTIVE_FILE="$HOME/.remotia/active"
+
+mkdir -p "$HOME/.remotia"
+
+case "${1:-}" in
+    on)
+        touch "$ACTIVE_FILE"
+        echo "✅ Remotia activado — las acciones de Claude Code llegarán a Telegram."
+        ;;
+    off)
+        rm -f "$ACTIVE_FILE"
+        echo "⏸  Remotia desactivado — Claude Code operará sin interceptación."
+        ;;
+    status)
+        if [ -f "$ACTIVE_FILE" ]; then
+            echo "🟢 Remotia está ACTIVO"
+        else
+            echo "🔴 Remotia está INACTIVO"
+        fi
+        ;;
+    *)
+        echo "Uso: remotia <on|off|status>"
+        exit 1
+        ;;
+esac

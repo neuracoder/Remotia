@@ -1,0 +1,9 @@
+{
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "git push origin main",
+    "description": "Push changes to remote"
+  },
+  "session_id": "test-session-001"
+}

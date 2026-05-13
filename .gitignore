@@ -1,0 +1,22 @@
+# Credenciales — nunca commitear
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs de runtime (viven en ~/.remotia/ fuera del repo)
+*.log
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
