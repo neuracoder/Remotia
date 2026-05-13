@@ -1,5 +1,9 @@
 # Remotia
 
+<p align="center">
+  <img src="assets/logo.png" alt="Remotia" width="400"/>
+</p>
+
 Intercepta los momentos en que Claude Code (u otras IAs agénticas) se detiene esperando
 aprobación del usuario y envía una notificación a Telegram con botones interactivos para
 aprobar o rechazar desde el celular — sin necesidad de estar frente a la PC.
