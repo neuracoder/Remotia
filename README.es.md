@@ -4,13 +4,37 @@
   <img src="assets/logo.png" alt="Remotia" width="400"/>
 </p>
 
-Intercepta los momentos en que Claude Code (u otras IAs agénticas) se detiene esperando
-aprobación del usuario y envía una notificación a Telegram con botones interactivos para
-aprobar o rechazar desde el celular — sin necesidad de estar frente a la PC.
+> Construí Remotia — aprobá o cancelá acciones de Claude Code desde Telegram aunque no estés en la PC
 
-**Caso de uso real:** Te alejás de la PC para llevar a tus hijos al colegio. Claude Code
-se detiene esperando un "yes". Con Remotia podés aprobar desde el auto con un tap en
-Telegram y el proceso continúa solo.
+No soy desarrollador profesional, pero paso mucho tiempo construyendo cosas con Claude Code en VSCode. Se convirtió en una parte central de cómo trabajo.
+
+El problema: tengo dos hijos en edad escolar. La vida no se pausa por inspiración. Estoy constantemente alejándome — llevarlos al colegio, buscarlos, clase de danza, mandados. Y la familia no es algo que se postergue. Todo lo demás puede esperar, incluso el código.
+
+Pero Claude Code no espera. Se detiene y pide aprobación antes de cada acción significativa. Lo cual está bien — no quiero correr con `--auto-approve` y volver a un proyecto roto.
+
+Lo que hacía: conectarme por TeamViewer desde el celular, mirando VSCode en una pantalla chiquita, moviendo el dedo con cuidado para tocar "Approve" en lo que sea que Claude Code estuviese pidiendo. Cada. Vez.
+
+Eso cansó rápido.
+
+Así que construí Remotia.
+
+Es un hook para Claude Code que intercepta las solicitudes de aprobación y las manda a Telegram. Recibís un mensaje con el detalle de lo que Claude quiere hacer, y dos botones: ✅ Aprobar o ❌ Cancelar.
+
+Cuando me voy: `remotia on`  
+Cuando vuelvo a la PC: `remotia off`
+
+Eso es todo. Claude Code sigue trabajando mientras estoy en el auto. Apruebo desde el celular. Sin TeamViewer. Sin `--auto-approve`. Sin proyectos rotos.
+
+**Cómo funciona:**
+
+- Registra un hook `PreToolUse` en `~/.claude/settings.json`
+- Toggle on/off con un archivo de bandera simple (`remotia on` / `remotia off`)
+- Python puro + requests — sin dependencias complejas
+- Funciona en Linux, macOS y Windows
+
+GitHub: https://github.com/neuracoder/Remotia
+
+Es gratuito, open source, y tardé una tarde en construirlo. Si alguna vez te encontraste aprobando acciones de Claude Code desde el celular mientras hacías otra cosa — esto puede ayudarte.
 
 ---
 

@@ -4,13 +4,37 @@
   <img src="assets/logo.png" alt="Remotia" width="400"/>
 </p>
 
-Intercepts the moments when Claude Code (or other agentic AI tools) pauses waiting for
-your approval, and sends a Telegram notification with interactive buttons so you can
-approve or reject from your phone — without needing to be at your computer.
+> I built Remotia — approve/deny Claude Code actions from Telegram while I'm away from my desk
 
-**Real-world use case:** You step away from your computer to drop the kids off at school.
-Claude Code stops and waits for a "yes". With Remotia you can approve from the car with
-a tap in Telegram and the process keeps running on its own.
+I'm not a professional developer, but I spend a lot of time building things with Claude Code in VSCode. It's become a core part of how I work.
+
+The problem: I have two school-age kids. Life doesn't pause for inspiration. I'm constantly stepping away — school drop-offs, pickups, dance class, errands. And family is not something I postpone. Everything else can wait, including code.
+
+But Claude Code doesn't wait. It stops and asks for approval before every significant action. Which is good — I don't want to run `--auto-approve` and come back to a broken project.
+
+So what I was doing: connecting via TeamViewer from my phone, squinting at VSCode on a tiny screen, carefully moving my finger to hit "Approve" on whatever Claude Code was asking. Every. Single. Time.
+
+That got old fast.
+
+So I built Remotia.
+
+It's a hook for Claude Code that intercepts approval requests and sends them to your Telegram instead. You get a message with the details of what Claude wants to do, and two buttons: ✅ Approve or ❌ Cancel.
+
+When I'm leaving: `remotia on`  
+When I'm back at my desk: `remotia off`
+
+That's it. Claude Code keeps working while I'm in the car. I approve from my phone. No TeamViewer. No `--auto-approve`. No broken projects.
+
+**How it works:**
+
+- Registers a `PreToolUse` hook in `~/.claude/settings.json`
+- On/off toggle via a simple flag file (`remotia on` / `remotia off`)
+- Pure Python + requests — no complex dependencies
+- Works on Linux, macOS, and Windows
+
+GitHub: https://github.com/neuracoder/Remotia
+
+It's free, open source, and took one afternoon to build. If you've ever found yourself approving Claude Code actions from your phone while doing something else entirely — this might help.
 
 ---
 
