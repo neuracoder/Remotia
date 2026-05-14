@@ -75,7 +75,7 @@ If you use Homebrew, make sure `pip3` points to your Homebrew Python.
 **Prerequisites:**
 - [Python 3.10+](https://www.python.org/downloads/) — during installation, check **"Add Python to PATH"**
 - [Claude Code](https://claude.ai/code) installed and configured
-- Git (or download the ZIP from the repository)
+- [Git for Windows](https://git-scm.com/download/win) — required (includes Git Bash, which the installer configures automatically)
 
 Open **cmd** or **PowerShell** in the project folder and run:
 
@@ -86,7 +86,9 @@ install.bat
 ```
 
 The installer installs Python dependencies, registers the hook in Claude Code's `settings.json`,
-and automatically adds `%USERPROFILE%\bin` to your user PATH.
+automatically adds `%USERPROFILE%\bin` to your user PATH, and detects your Git for Windows
+installation to configure `CLAUDE_CODE_GIT_BASH_PATH` — this avoids the PowerShell
+confirmation dialog that Claude Code shows on Windows.
 
 > **Important:** when the installation finishes, close this terminal and open a new one.
 > The `remotia` command won't be available in the same session where you ran `install.bat`.

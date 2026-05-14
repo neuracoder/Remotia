@@ -56,6 +56,19 @@ echo [6/6] Configurando Claude Code settings.json ...
 if not exist "%USERPROFILE%\.claude" mkdir "%USERPROFILE%\.claude"
 if not exist "%SETTINGS_FILE%" echo {} > "%SETTINGS_FILE%"
 
+:: Detectar Git Bash para CLAUDE_CODE_GIT_BASH_PATH
+set "GIT_BASH_PATH=C:\Program Files\Git\bin\bash.exe"
+for /f "delims=" %%i in ('where git 2^>nul') do (
+    if not defined GIT_EXE set "GIT_EXE=%%i"
+)
+if defined GIT_EXE (
+    for %%i in ("!GIT_EXE!") do set "GIT_CMD_DIR=%%~dpi"
+    if "!GIT_CMD_DIR:~-1!"=="\" set "GIT_CMD_DIR=!GIT_CMD_DIR:~0,-1!"
+    for %%i in ("!GIT_CMD_DIR!") do set "GIT_ROOT=%%~dpi"
+    if "!GIT_ROOT:~-1!"=="\" set "GIT_ROOT=!GIT_ROOT:~0,-1!"
+    set "GIT_BASH_PATH=!GIT_ROOT!\bin\bash.exe"
+)
+
 :: Escribir el script Python en un archivo temporal y ejecutarlo
 :: (heredoc no existe en cmd; usamos un .py temporal con argumentos)
 set "SETUP_SCRIPT=%TEMP%\remotia_setup.py"
@@ -64,6 +77,7 @@ set "SETUP_SCRIPT=%TEMP%\remotia_setup.py"
 >> "%SETUP_SCRIPT%" echo.
 >> "%SETUP_SCRIPT%" echo settings_path = Path(sys.argv[1])
 >> "%SETUP_SCRIPT%" echo hook_command = sys.argv[2]
+>> "%SETUP_SCRIPT%" echo bash_path = sys.argv[3]
 >> "%SETUP_SCRIPT%" echo.
 >> "%SETUP_SCRIPT%" echo with open(settings_path) as f:
 >> "%SETUP_SCRIPT%" echo     try:
@@ -89,6 +103,9 @@ set "SETUP_SCRIPT=%TEMP%\remotia_setup.py"
 >> "%SETUP_SCRIPT%" echo     if rule not in allow:
 >> "%SETUP_SCRIPT%" echo         allow.append(rule)
 >> "%SETUP_SCRIPT%" echo.
+>> "%SETUP_SCRIPT%" echo env_conf = settings.setdefault("env", {})
+>> "%SETUP_SCRIPT%" echo env_conf["CLAUDE_CODE_GIT_BASH_PATH"] = bash_path
+>> "%SETUP_SCRIPT%" echo.
 >> "%SETUP_SCRIPT%" echo with open(settings_path, "w") as f:
 >> "%SETUP_SCRIPT%" echo     json.dump(settings, f, indent=2, ensure_ascii=False)
 >> "%SETUP_SCRIPT%" echo     f.write("\n")
@@ -98,8 +115,9 @@ set "SETUP_SCRIPT=%TEMP%\remotia_setup.py"
 >> "%SETUP_SCRIPT%" echo else:
 >> "%SETUP_SCRIPT%" echo     print("  Hook registrado correctamente.")
 >> "%SETUP_SCRIPT%" echo print("  defaultShell=powershell y permisos Bash/PowerShell configurados.")
+>> "%SETUP_SCRIPT%" echo print(f"  Git Bash: {bash_path}")
 
-python "%SETUP_SCRIPT%" "%SETTINGS_FILE%" "python %SCRIPT_DIR:\=/%/remotia.py"
+python "%SETUP_SCRIPT%" "%SETTINGS_FILE%" "python %SCRIPT_DIR:\=/%/remotia.py" "%GIT_BASH_PATH%"
 if errorlevel 1 (
     echo       ERROR: Fallo al registrar el hook.
     del /f /q "%SETUP_SCRIPT%"
