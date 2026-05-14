@@ -50,8 +50,8 @@ if not exist "%SCRIPT_DIR%\.env" (
     echo       .env ya existe -- sin cambios
 )
 
-:: [6/6] Hook en Claude Code settings.json
-echo [6/6] Registrando hook en %SETTINGS_FILE% ...
+:: [6/6] Hook y configuracion de shell en Claude Code settings.json
+echo [6/6] Configurando Claude Code settings.json ...
 
 if not exist "%USERPROFILE%\.claude" mkdir "%USERPROFILE%\.claude"
 if not exist "%SETTINGS_FILE%" echo {} > "%SETTINGS_FILE%"
@@ -75,23 +75,29 @@ set "SETUP_SCRIPT=%TEMP%\remotia_setup.py"
 >> "%SETUP_SCRIPT%" echo.
 >> "%SETUP_SCRIPT%" echo hooks = settings.setdefault("hooks", {})
 >> "%SETUP_SCRIPT%" echo pre_tool = hooks.setdefault("PreToolUse", [])
+>> "%SETUP_SCRIPT%" echo hook_exists = any(h.get("command") == hook_command for e in pre_tool for h in e.get("hooks", []))
+>> "%SETUP_SCRIPT%" echo if not hook_exists:
+>> "%SETUP_SCRIPT%" echo     pre_tool.append({
+>> "%SETUP_SCRIPT%" echo         "matcher": "Bash!PIPE!Write!PIPE!Edit!PIPE!MultiEdit",
+>> "%SETUP_SCRIPT%" echo         "hooks": [{"type": "command", "command": hook_command, "timeout": 540}]
+>> "%SETUP_SCRIPT%" echo     })
 >> "%SETUP_SCRIPT%" echo.
->> "%SETUP_SCRIPT%" echo for entry in pre_tool:
->> "%SETUP_SCRIPT%" echo     for h in entry.get("hooks", []):
->> "%SETUP_SCRIPT%" echo         if h.get("command") == hook_command:
->> "%SETUP_SCRIPT%" echo             print("  Hook de Remotia ya estaba registrado -- sin cambios.")
->> "%SETUP_SCRIPT%" echo             sys.exit(0)
->> "%SETUP_SCRIPT%" echo.
->> "%SETUP_SCRIPT%" echo pre_tool.append({
->> "%SETUP_SCRIPT%" echo     "matcher": "Bash!PIPE!Write!PIPE!Edit!PIPE!MultiEdit",
->> "%SETUP_SCRIPT%" echo     "hooks": [{"type": "command", "command": hook_command, "timeout": 540}]
->> "%SETUP_SCRIPT%" echo })
+>> "%SETUP_SCRIPT%" echo settings["defaultShell"] = "powershell"
+>> "%SETUP_SCRIPT%" echo perms = settings.setdefault("permissions", {})
+>> "%SETUP_SCRIPT%" echo allow = perms.setdefault("allow", [])
+>> "%SETUP_SCRIPT%" echo for rule in ["Bash(*)", "PowerShell(*)"]:
+>> "%SETUP_SCRIPT%" echo     if rule not in allow:
+>> "%SETUP_SCRIPT%" echo         allow.append(rule)
 >> "%SETUP_SCRIPT%" echo.
 >> "%SETUP_SCRIPT%" echo with open(settings_path, "w") as f:
 >> "%SETUP_SCRIPT%" echo     json.dump(settings, f, indent=2, ensure_ascii=False)
 >> "%SETUP_SCRIPT%" echo     f.write("\n")
 >> "%SETUP_SCRIPT%" echo.
->> "%SETUP_SCRIPT%" echo print("  Hook registrado correctamente.")
+>> "%SETUP_SCRIPT%" echo if hook_exists:
+>> "%SETUP_SCRIPT%" echo     print("  Hook ya registrado -- sin cambios.")
+>> "%SETUP_SCRIPT%" echo else:
+>> "%SETUP_SCRIPT%" echo     print("  Hook registrado correctamente.")
+>> "%SETUP_SCRIPT%" echo print("  defaultShell=powershell y permisos Bash/PowerShell configurados.")
 
 python "%SETUP_SCRIPT%" "%SETTINGS_FILE%" "python %SCRIPT_DIR:\=/%/remotia.py"
 if errorlevel 1 (
