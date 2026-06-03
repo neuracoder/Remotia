@@ -5,6 +5,8 @@ BASE_URL se evalua en cada llamada para garantizar que el token este cargado.
 
 import time
 import logging
+from typing import Optional
+
 import requests
 
 import config
@@ -75,7 +77,7 @@ def _clear_pending_updates() -> int:
     return 0
 
 
-def send_and_wait(message: str, timeout: int) -> str:
+def send_and_wait(message: str, timeout: int) -> Optional[str]:
     offset = _clear_pending_updates()
     message_id = _send_message(message)
 
@@ -113,8 +115,10 @@ def send_and_wait(message: str, timeout: int) -> str:
                 _edit_message(message_id, message, "❌ Cancelado")
                 return "deny"
 
-    notify_plain("⏱ Remotia: tiempo agotado — acción cancelada automáticamente")
-    return "deny"
+    # Tiempo agotado: devolvemos None para que remotia.py decida según
+    # REMOTIA_TIMEOUT_ACTION (allow/deny) y envíe el aviso correspondiente.
+    _edit_message(message_id, message, "⏱ Tiempo agotado")
+    return None
 
 
 def notify_plain(text: str) -> None:

@@ -22,7 +22,7 @@ if not config.validate():
     sys.exit(0)
 
 import telegram_notifier
-from config import REMOTIA_LOG_FILE, REMOTIA_TIMEOUT_SECONDS
+from config import REMOTIA_LOG_FILE, REMOTIA_TIMEOUT_SECONDS, REMOTIA_TIMEOUT_ACTION
 
 # ── Logging setup ─────────────────────────────────────────────────────────────
 
@@ -147,14 +147,19 @@ def main() -> None:
     elapsed = round(time.monotonic() - start, 1)
 
     if decision is None:
-        decision = "deny"
+        decision = "allow" if REMOTIA_TIMEOUT_ACTION == "allow" else "deny"
         logger.info(
-            "TIMEOUT   | tool=%s | acción=%s | elapsed=%.1fs",
-            tool_name, action_summary[:200], elapsed,
+            "TIMEOUT   | tool=%s | acción=%s | decisión=%s | elapsed=%.1fs",
+            tool_name, action_summary[:200], decision.upper(), elapsed,
         )
-        telegram_notifier.notify_plain(
-            "⏱ Remotia: tiempo agotado — acción cancelada automáticamente"
-        )
+        if decision == "allow":
+            telegram_notifier.notify_plain(
+                "⏱ Remotia: tiempo agotado — acción aceptada automáticamente"
+            )
+        else:
+            telegram_notifier.notify_plain(
+                "⏱ Remotia: tiempo agotado — acción cancelada automáticamente"
+            )
     else:
         logger.info(
             "DECISIÓN  | tool=%s | acción=%s | decisión=%s | elapsed=%.1fs",

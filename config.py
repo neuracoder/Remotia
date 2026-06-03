@@ -9,6 +9,10 @@ load_dotenv(dotenv_path=_env_path)
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 REMOTIA_TIMEOUT_SECONDS = int(os.getenv("REMOTIA_TIMEOUT_SECONDS", "480"))
+# Acción a tomar cuando se agota el tiempo sin respuesta desde Telegram:
+# "deny" → cancelar la acción (por defecto, más seguro)
+# "allow" → aceptar la acción automáticamente
+REMOTIA_TIMEOUT_ACTION = os.getenv("REMOTIA_TIMEOUT_ACTION", "deny").strip().lower()
 REMOTIA_LOG_FILE = Path(
     os.getenv("REMOTIA_LOG_FILE", str(Path.home() / ".remotia" / "remotia.log"))
 )
